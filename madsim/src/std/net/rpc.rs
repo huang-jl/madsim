@@ -54,21 +54,25 @@
 //! });
 //! ```
 
-use super::*;
-use bytes::Buf;
+use std::any::Any;
 #[doc(no_inline)]
 pub use bytes::Bytes;
-use futures::FutureExt;
-use rand::Rng;
 #[doc(no_inline)]
 pub use serde::{de::DeserializeOwned, Deserialize, Serialize};
-use std::{
-    any::Any,
-    future::Future,
-    io::{self, IoSlice},
-    net::SocketAddr,
-    sync::Arc,
-    time::Duration,
+
+#[cfg(not(feature = "erpc"))]
+use {
+    super::*,
+    bytes::Buf,
+    futures::FutureExt,
+    rand::Rng,
+    std::{
+        future::Future,
+        io::{self, IoSlice},
+        net::SocketAddr,
+        sync::Arc,
+        time::Duration,
+    },
 };
 
 /// A RPC request.
@@ -93,6 +97,7 @@ pub const fn hash_str(s: &str) -> u64 {
     h
 }
 
+#[cfg(not(feature = "erpc"))]
 impl Endpoint {
     /// Call function on a remote node with timeout.
     pub async fn call_timeout<R: Request>(

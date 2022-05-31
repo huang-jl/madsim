@@ -45,6 +45,9 @@ mod tcp;
 #[cfg(feature = "ucx")]
 mod ucx;
 
+#[cfg(all(feature = "erpc", any(feature = "ucx", feature = "tcp")))]
+compile_error!("Cannot enable ucx, tcp while enable erpc");
+
 #[cfg(feature = "erpc")]
 mod erpc;
 
